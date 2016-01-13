@@ -4,7 +4,7 @@ require 'shellwords'
 class RubyIdn
   attr_accessor :name
 
-  def initialize(name: )
+  def initialize(name:)
     @name = name
   end
 
@@ -23,30 +23,30 @@ class RubyIdn
   class << self
     def to_ascii(domain)
       ret_domain = to_stringprep(domain)
-      call_idn(domain: ret_domain, options: '-a')
+      call_idn(domain: ret_domain, options: '--idna-to-ascii')
     end
 
     def to_unicode(domain)
       ret_domain = to_stringprep(domain)
-      call_idn(domain: ret_domain, options: '-u')
+      call_idn(domain: ret_domain, options: '--idna-to-unicode')
     end
 
     def to_stringprep(domain)
-      call_idn(domain: domain, options: '-s')
+      call_idn(domain: domain, options: '--stringprep')
     end
 
     def to_nameprep(domain)
-      call_idn(domain: domain, options: ['-p', 'Nameprep'])
+      call_idn(domain: domain, options: ['--profile', 'Nameprep'])
     end
 
     private
 
-    def call_idn( domain:, options: )
+    def call_idn(domain:, options:)
       return domain if domain.nil? || domain.empty?
-      opts = ["idn", options, "--quiet", domain]
-      opts.flatten!
+      command = ["idn", options, "--quiet", domain]
+      command.flatten!
 
-      stdout, stderr, _ = Open3.capture3(opts.shelljoin)
+      stdout, stderr, _ = Open3.capture3(command.shelljoin)
       unless stderr.empty?
         error = delete_unnecessary_char_for_error(stderr)
         raise IdnError, error
@@ -55,10 +55,14 @@ class RubyIdn
     end
 
     def delete_unnecessary_char_for_error(error_message)
-      error_message =~ /idn: (.*)\n/
-      $1
+      if error_message =~ /idn: (.*)\n/
+        $1
+      else
+        raise UnknownIdnError, error_message
+      end
     end
   end
 end
 
 class IdnError < StandardError; end
+class UnknownIdnError < StandardError; end
