@@ -114,5 +114,12 @@ describe RubyIdn do
         expect( RubyIdn.to_nameprep("ふー。ＪＰ") ).to eq("xn--19j6o.jp")
       end
     end
+
+    describe "#delete_unnecessary_char_for_error" do
+      it "raise UnknownIdnError" do
+        expect(Open3).to receive(:capture3).and_return(["","unknown error",""])
+        expect{ RubyIdn.to_ascii('1' * 64 + '.com') }.to raise_error(UnknownIdnError)
+      end
+    end
   end
 end
