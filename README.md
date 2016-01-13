@@ -1,8 +1,10 @@
-# Ruby::Idn
+# RubyIdn
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ruby/idn`. To experiment with that code, run `bin/console` for an interactive prompt.
+Wrapped idn command for Ruby.
 
-TODO: Delete this and the text above, and describe your gem
+## Requirements
+
+- [libidn](http://www.gnu.org/software/libidn/)
 
 ## Installation
 
@@ -14,26 +16,37 @@ gem 'ruby-idn'
 
 And then execute:
 
-    $ bundle
+```bash
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install ruby-idn
+```bash
+$ gem install ruby-idn
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+unicode to ascii
 
-## Development
+```ruby
+require 'ruby_idn'
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake false` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+RubyIdn.to_ascii("ふー.com")
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+#=> "xn--19j6o.com"
+```
 
-## Contributing
+ascii to unicode
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/ruby-idn. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
+```ruby
+require 'ruby_idn'
 
+RubyIdn.to_unicode("xn--19j6o.com")
+
+#=> "ふー.com"
+```
 
 ## License
 
