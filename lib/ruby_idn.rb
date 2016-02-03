@@ -2,6 +2,7 @@ require 'open3'
 require 'shellwords'
 
 class RubyIdn
+  CHARACTER_CODE = 'ja_JP.UTF-8'.freeze
   attr_accessor :name
 
   def initialize(name:)
@@ -46,7 +47,7 @@ class RubyIdn
       command = ["idn", options, "--quiet", domain]
       command.flatten!
 
-      stdout, stderr, _ = Open3.capture3(command.shelljoin)
+      stdout, stderr, _ = Open3.capture3({'LANG' => CHARACTER_CODE}, command.shelljoin )
       unless stderr.empty?
         error = delete_unnecessary_char_for_error(stderr)
         raise IdnError, error
